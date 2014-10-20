@@ -1,0 +1,10 @@
+applications:
+- services:
+  - MyFirstWeb:cloudantNoSQLDB
+  disk_quota: 1024M
+  host: MyFirstWeb
+  name: MyFirstWeb
+  path: JavaCloudantDB.war
+  domain: stage1.mybluemix.net
+  instances: 1
+  memory: 512M
