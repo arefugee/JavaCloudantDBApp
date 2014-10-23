@@ -125,7 +125,7 @@ var attachButton = "<br><input type=\"file\" name=\"file\" id=\"upload_file\"><i
 
 function setRowContent(item, row)
 {
-		var innerHTML = "<h3>" + item.ownerName1 +" / " + item.ownerName2 +"</h3>";
+		var innerHTML = "<h6>" + item.ownerName1 +" / " + item.ownerName2 +"</h6>";
 		var attachments = item.attachements;
 		if(attachments && attachments.length>0)
 		{
@@ -133,7 +133,7 @@ function setRowContent(item, row)
 			if(attachment.content_type.indexOf("image/")==0)
 			{
 				innerHTML+= "<a href='#'>" +
-								"<img height=\"250px\" width=\"250px\" src=" + attachment.url + " alt='Image' />" +
+								"<img  src=" + attachment.url + " alt='Image' />" +
 							"</a>";
 			}
 		}

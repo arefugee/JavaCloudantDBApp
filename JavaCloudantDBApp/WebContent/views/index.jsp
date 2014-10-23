@@ -10,6 +10,9 @@
     <meta name="author" content="">
     <link href="resources/css/bootstrap.min.css" rel="stylesheet">
     <link href="resources/css/templatemo_justified.css" rel="stylesheet">
+    <link href="resources/css/bootstrap-combined.min.css" rel="stylesheet">
+    <link href="resources/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" media="screen">
+    
     <script src="resources/js/jquery-1.11.1.js"></script>
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
