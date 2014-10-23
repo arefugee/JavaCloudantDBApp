@@ -122,7 +122,7 @@ public class MyFirstServlet extends ResourceServlet{
 	/*
 	 * Create a document and Initialize with sample data/attachments
 	 */
-	private List<String> initializeSampleData(CouchDbConnector dbConnector) throws IOException
+	protected List<String> initializeSampleData(CouchDbConnector dbConnector) throws IOException
 	{
 				
 		long id = System.currentTimeMillis();
@@ -161,30 +161,7 @@ public class MyFirstServlet extends ResourceServlet{
 			
 	}
 	
-	private JSONArray getAttachmentList(java.util.LinkedHashMap attachmentList, String docID) throws Exception
-	{
-		
-		JSONArray attachmentArray = new JSONArray();
-		String URLTemplate = "http://"+user+":"+password+"@"+databaseHost+"/"+databaseName+"/";
-		
-		for(Object key : attachmentList.keySet())
-		{
-			java.util.LinkedHashMap attach = (java.util.LinkedHashMap)attachmentList.get(key);	
-			JSONObject attachedObject = new JSONObject();
-			//set the content type of the attachment
-			attachedObject.put("content_type", attach.get("content_type").toString());
-			//append the document id and attachment key to the URL
-			attachedObject.put("url", URLTemplate+docID+"/"+key);
-			//set the key of the attachment
-			attachedObject.put("key", key);
-			
-			//add the attachment object to the array
-			attachmentArray.add(attachedObject);
-		}
-		
-		return attachmentArray;
-		
-	}
+	
 	
 	protected CouchDbConnector createDbConnector() throws Exception{
 		databaseName = "shop_nosql_db";

@@ -27,8 +27,14 @@ function loadItems(){
 		if(!hasItems){
 			items = defaultItems;
 		}
+		var row;
 		for(i = 0; i < items.length; ++i){
-			addItem(items[i], !hasItems);
+			if (i/4 == 0){
+				row = document.createElement("div");
+				row.setAttribute("class", "row space30");
+				document.getElementById('caselist').appendChild(row);;
+			}
+			addItem(items[i], !hasItems, row);
 		}
 		if(!hasItems){
 			var table = document.getElementById('notes');
@@ -55,7 +61,7 @@ function startProgressIndicator(row)
 
 function removeProgressIndicator(row)
 {
-	row.innerHTML="<td class='content'>uploaded...</td>";
+	row.innerHTML="<td class='content'></td>";
 }
 
 function addNewRow(table)
@@ -65,10 +71,10 @@ function addNewRow(table)
 	return table.lastChild;
 }
 
-function uploadFile(node)
+function uploadFile(filenode, formnode, picdiv)
 {
 	
-	var file = node.previousSibling.files[0];
+	var file = filenode.files[0];
 	
 	//if file not selected, throw error
 	if(!file)
@@ -77,101 +83,72 @@ function uploadFile(node)
 		return;
 	}
 	
-	var row = node.parentNode.parentNode;
-	
+	var row = formnode;
 	var form = new FormData();
+	var picStatus = document.getElementById("picStatus");
 	form.append("file", file);
 	
 	var id = row.getAttribute('data-id');
-	
 	var queryParams = "id=" + (id==null?-1:id);
-	queryParams+= "&name="+row.firstChild.firstChild.value;
-	queryParams+= "&carnumber="+row.firstChild.firstChild.nextSibling.value;
-	queryParams+= "&cartype="+row.firstChild.firstChild.nextSibling.nextSibling.value;
-	queryParams+="&value="+row.firstChild.nextSibling.firstChild.firstChild.firstChild.firstChild.firstChild.value;
+	for( i=0; i<formnode.length;i++ ){
+		item = formnode[i];
+		queryParams += "&" + item.name + "=" + item.value;
+	}
 	
-	
-	var table = row.firstChild.nextSibling.firstChild;	
-	var newRow = addNewRow(table);	
-	
-	getloc();
-	
-	startProgressIndicator(newRow);
+	startProgressIndicator(picStatus);
 	
 	xhrAttach(REST_DATA+"/attach?"+queryParams, form, function(item){		
 		console.log('attached: ', item);
 		row.setAttribute('data-id', item.id);
-		removeProgressIndicator(row);
-		setRowContent(item, row);
+		removeProgressIndicator(picStatus);
+		setUploadPics(item, picdiv);
 	}, function(err){
 		console.error(err);
 	});
+}
+
+function setUploadPics(item, picdiv){
+	var attachments = item.attachements;
+	var innerHTML = "";
+	if(attachments && attachments.length>0)
+	{
+		var attachment = attachments[attachments.length-1];
+		if(attachment.content_type.indexOf("image/")==0)
+		{
+			innerHTML += "<br><div><img height=\"250px\" width=\"250px\" src=" + attachment.url + " alt='Image' /></div>";
+		}
+		picdiv.innerHTML += innerHTML;
+	}
 }
 
 var attachButton = "<br><input type=\"file\" name=\"file\" id=\"upload_file\"><input width=\"100\" type=\"submit\" value=\"Upload\" onClick='uploadFile(this)'>";
 
 function setRowContent(item, row)
 {
-		var innerHTML = "<td class='content'>" +
-				"<table border=\"0\">" +
-				"<tr>"+
-				"<textarea id='nameText' onkeydown='onKey(event)'>"+item.name+"</textarea>" +
-				"</tr>"+
-				"<tr>"+
-				"<textarea id='carPlateNumberText' onkeydown='onKey(event)'>"+item.carnumber+"</textarea>" +
-				"</tr>"+
-				"<tr>"+
-				"<textarea id='carTypeText' onkeydown='onKey(event)'>"+item.cartype+"</textarea>" +
-				"</tr>"+
-				"</table>"+
-						"</td><td class='content'><table border=\"0\">";	
-		
-		var valueTextArea = "<textarea id='valText' onkeydown='onKey(event)' placeholder=\"Enter a description...\"></textarea>";		
-		if(item.value)
-		{
-			valueTextArea="<textarea id='valText' onkeydown='onKey(event)'>"+item.value+"</textarea>";
-		}
-		
-		innerHTML+="<tr border=\"0\" ><td class='content'>"+valueTextArea+"</td></tr>" + "<tr border=\"0\" ><td class='content'><div style='width:200px;height:100px;border:1px solid gray;margin:30px auto' id='container'></div></td></tr>";
-		          
-		
+		var innerHTML = "<h3>" + item.ownerName1 +" / " + item.ownerName2 +"</h3>";
 		var attachments = item.attachements;
 		if(attachments && attachments.length>0)
 		{
-			
-			for(var i = 0; i < attachments.length; ++i){
-				var attachment = attachments[i];
-				if(attachment.content_type.indexOf("image/")==0)
-				{
-					innerHTML+= "<tr border=\"0\" ><td class='content'>"+attachment.key+"<br><img height=\"100\" width=\"200\" src=\""+attachment.url+"\" onclick='window.open(\""+attachment.url+"\")'></img></td></tr>" ;
-
-
-				} else if(attachment.content_type.indexOf("audio/")==0)
-				{
-					innerHTML+= "<tr border=\"0\" ><td class='content'>"+attachment.key+"<br><AUDIO  height=\"50\" width=\"200\" src=\""+attachment.url+"\" controls></AUDIO></td></tr>" ;
-
-
-				} else if(attachment.content_type.indexOf("video/")==0)
-				{
-					innerHTML+= "<tr border=\"0\" ><td class='content'>"+attachment.key+"<br><VIDEO  height=\"100\" width=\"200\" src=\""+attachment.url+"\" controls></VIDEO></td></tr>" ;
-
-
-				} else if(attachment.content_type.indexOf("text/")==0 || attachment.content_type.indexOf("application/")==0)
-				{
-					innerHTML+= "<tr border=\"0\" ><td class='content'><a href=\""+attachment.url+"\" target=\"_blank\">"+attachment.key+"</a></td></tr>" ;
-
-				} 
-			}	
-			
+			var attachment = attachments[0];
+			if(attachment.content_type.indexOf("image/")==0)
+			{
+				innerHTML+= "<a href='#'>" +
+								"<img height=\"250px\" width=\"250px\" src=" + attachment.url + " alt='Image' />" +
+							"</a>";
+			}
 		}
+		innerHTML += "<p>" + item.carNumber1 + "</p>";
+		innerHTML += "<p>" + item.carNumber2 + "</p>";
+		innerHTML += "<p>" + item.dateTime + "</p>";
+		innerHTML += "<p><a class='btn-sm btn-primary' href='add?id="+item.id+"'>Details &raquo;</a></p>";
 		
-		row.innerHTML = innerHTML+"</table>"+attachButton+"</td><td class='deleteBtn' onclick='deleteItem(this)' title='delete me'></td>";
-	
+		row.innerHTML = innerHTML;
 }
 
-function addItem(item, isNew){
+function addItem(item, isNew, container){
 	
-	var row = document.createElement('tr');
+	var row = document.createElement('div');
+	row.setAttribute("class", "col-xs-6 col-sm-3");
 	var id = item && item.id;
 	if(id){
 		row.setAttribute('data-id', id);
@@ -215,29 +192,29 @@ function addItem(item, isNew){
 						"</td>";
 	}
 
-	var table = document.getElementById('notes');
-	table.lastChild.appendChild(row);
-	row.isNew = !item || isNew;
+	container.appendChild(row);
 	
-	if(row.isNew)
+}
+
+function deleteItem(row){
+	if(row.getAttribute('data-id'))
 	{
-		var textarea = row.firstChild.firstChild;
-		textarea.focus();
+		xhrDelete(REST_DATA + '?id=' + row.getAttribute('data-id'), function(){
+			alert("Delete successfully!");
+			window.location.href="./"; 
+		}, function(err){
+			console.error(err);
+		});
 	}
 	
 }
 
-function deleteItem(deleteBtnNode){
-	var row = deleteBtnNode.parentNode;
-	row.parentNode.removeChild(row);
-	if(row.getAttribute('data-id'))
-	{
-		xhrDelete(REST_DATA + '?id=' + row.getAttribute('data-id'), function(){
-		}, function(err){
-			console.error(err);
-		});
-	}	
+function addAnother(row){
+	window.location.href="./add"; 
 }
+
+
+
 
 
 function onKey(evt){
@@ -283,7 +260,6 @@ function onKey(evt){
 					console.error(err);
 				});
 			}
-		
 	
 		if(row.nextSibling){
 			row.nextSibling.firstChild.firstChild.focus();
@@ -294,29 +270,59 @@ function onKey(evt){
 }
 
 function saveChange(contentNode, callback){
-	var row = contentNode.parentNode.parentNode;
+	var data = {};
 	
-	var data = {
-		name: row.firstChild.firstChild.value,
-		value:row.firstChild.nextSibling.firstChild.value		
-	};
-	
-	if(row.isNew){
-		delete row.isNew;
+	for( i=0; i<contentNode.length;i++ ){
+		item = contentNode[i];
+		if (item.name !== ''){
+			data[item.name] = item.value;
+		}
+	}
+	var id = contentNode.getAttribute('data-id');
+	if (id == null || id == ""){
 		xhrPost(REST_DATA, data, function(item){
-			row.setAttribute('data-id', item.id);
+			contentNode.setAttribute('data-id', item.id);
+			alert("Create record successfully!");
 			callback && callback();
 		}, function(err){
 			console.error(err);
 		});
-	}else{
-		data.id = row.getAttribute('data-id');
+	} else {
+		data.id = id;
+		data._method = 'PUT';
 		xhrPut(REST_DATA, data, function(){
 			console.log('updated: ', data);
+			alert("Update record successfully!");
 		}, function(err){
 			console.error(err);
 		});
 	}
+	
+	
+	// get form's each object
+//	var row = contentNode.parentNode.parentNode;
+//	
+//	var data = {
+//		name: row.firstChild.firstChild.value,
+//		value:row.firstChild.nextSibling.firstChild.value		
+//	};
+//	
+//	if(row.isNew){
+//		delete row.isNew;
+//		xhrPost(REST_DATA, data, function(item){
+//			row.setAttribute('data-id', item.id);
+//			callback && callback();
+//		}, function(err){
+//			console.error(err);
+//		});
+//	}else{
+//		data.id = row.getAttribute('data-id');
+//		xhrPut(REST_DATA, data, function(){
+//			console.log('updated: ', data);
+//		}, function(err){
+//			console.error(err);
+//		});
+//	}
 }
 
 
@@ -338,10 +344,9 @@ function stopLoadingMessage()
 
 function getloc() {
     if(navigator.geolocation) {
-//        document.getElementById("status").innerHTML = "HTML5 Geolocation is supported in your browser.";
         navigator.geolocation.getCurrentPosition(updateLocation);
     }else{
-    	document.getElementById("container").innerHTML = "HTML5 Geolocation is not supported in your browser.";
+    	alert("HTML5 Geolocation is not supported in your browser.");
     }
 };
 
@@ -349,18 +354,13 @@ function updateLocation(position) {
     var latitude = position.coords.latitude;
     var longitude = position.coords.longitude;
     if(!latitude || !longitude) {
-        document.getElementById("status").innerHTML = "HTML5 Geolocation is supported in your browser, but location is currently not available.";
+        alert("HTML5 Geolocation is supported in your browser, but location is currently not available.");
         return;
     }
 
-    var map = new BMap.Map("container");                     // 创建Map实例
-    var point = new BMap.Point(longitude, latitude);        // 创建点坐标
-    map.centerAndZoom(point, 15);                            // 初始化地图,设置中心点坐标和地图级别。
-    var marker = new BMap.Marker(point);                        // 创建标注
-    map.addOverlay(marker);                                    //将标注添加到地图中
+    var map = new BMap.Map("mymapcontainer");                     
+    var point = new BMap.Point(longitude, latitude);        
+    map.centerAndZoom(point, 15);                         
+    var marker = new BMap.Marker(point);                        
+    map.addOverlay(marker);
 };
-
-showLoadingMessage();
-//updateServiceInfo();
-loadItems();
-

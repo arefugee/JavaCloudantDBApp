@@ -40,6 +40,8 @@
 	<script type="text/javascript" src="resources/js/index.js"></script>
 	<div id="myImage"><div id="innerImg"></div></div>
 	<br><br><br>	
+	<script type="text/javascript" src="resources/js/util.js"></script>
+	<script type="text/javascript" src="resources/js/index.js"></script>
 </body>
 </html>
 

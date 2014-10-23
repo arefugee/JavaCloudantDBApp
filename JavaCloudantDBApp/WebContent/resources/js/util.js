@@ -32,7 +32,7 @@ function xhrGet(url, callback, errback){
 }
 function xhrPut(url, data, callback, errback){
 	var xhr = new createXHR();
-	xhr.open("PUT", url, true);
+	xhr.open("POST", url, true);
 	xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhr.onreadystatechange = function(){
 		if(xhr.readyState == 4){

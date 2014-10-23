@@ -10,9 +10,9 @@
         <div id="status" style="text-align: center"></div>
         <div style="width:150px;height:150px;border:1px solid gray;margin:30px auto" id="container"></div>
         <div class="container">
-		<div class="row">
-			<div class="col-sm-6 col-md-4 col-md-offset-4">
-				<div class="account-wall">
+			<div class="row">
+				<div class="col-sm-6 col-md-4 col-md-offset-4">
+					<div class="account-wall">
 						<input type="text" class="form-control" placeholder="location name"
 							required autofocus id="locName"> 
 						<button title="Submit" name="Submit" onclick="postData()">Submit</button>
