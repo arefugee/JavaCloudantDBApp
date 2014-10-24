@@ -95,7 +95,8 @@ public class ResourceServlet extends AbstractResourceServlet{
 			data.put("dateTime", dateTime);	
 			data.put("latitude", latitude);	
 			data.put("longitude", longitude);	
-			data.put("acc_description", acc_description);	
+			data.put("acc_description", acc_description);
+			data.put("time", id);
 			data.put("_id", id+"");
 			data.put("creation_date", new Date().toString());
 			dbConnector.create(data);	
@@ -118,6 +119,7 @@ public class ResourceServlet extends AbstractResourceServlet{
 			obj.put("dateTime", dateTime);	
 			obj.put("latitude", latitude);	
 			obj.put("longitude", longitude);	
+			obj.put("time", id);
 			obj.put("acc_description", acc_description);	
 			dbConnector.update(obj);
 			
@@ -139,6 +141,7 @@ public class ResourceServlet extends AbstractResourceServlet{
 			resultObject.put("attachements", attachmentList);
 		}
 		resultObject.put("id", id);
+		resultObject.put("time", id);
 		resultObject.put("ownerName1", ownerName1);	
 		resultObject.put("ownerName2", ownerName2);	
 		resultObject.put("carNumber1", carNumber1);	
@@ -169,6 +172,7 @@ public class ResourceServlet extends AbstractResourceServlet{
 		Map<String, Object> data = new HashMap<String, Object>();
 		long id = System.currentTimeMillis();
 		data.put("_id", id+"");
+		data.put("time", id);
 		data.put("ownerName1", ownerName1);	
 		data.put("ownerName2", ownerName2);	
 		data.put("carNumber1", carNumber1);	
@@ -188,7 +192,8 @@ public class ResourceServlet extends AbstractResourceServlet{
 		resultObject.put("carNumber2", carNumber2);	
 		resultObject.put("dateTime", dateTime);	
 		resultObject.put("latitude", latitude);	
-		resultObject.put("longitude", longitude);	
+		resultObject.put("longitude", longitude);
+		resultObject.put("time", id);
 		resultObject.put("acc_description", acc_description);
 		closeDBConnector();
 		return resultObject.toString();	
@@ -272,7 +277,7 @@ public class ResourceServlet extends AbstractResourceServlet{
 				
 				if(docIds.size()==0)
 				{
-					docIds = initializeSampleData(dbConnector);
+//					docIds = initializeSampleData(dbConnector);
 				}
 				
 //				for(String docId : docIds)
@@ -287,6 +292,7 @@ public class ResourceServlet extends AbstractResourceServlet{
 					{	
 						JSONArray attachmentList = getAttachmentList(attachments, obj.get("_id")+"");
 						jsonObject.put("id", obj.get("_id"));
+						jsonObject.put("time", obj.get("time"));
 						jsonObject.put("ownerName1", obj.get("ownerName1"));
 						jsonObject.put("ownerName2", obj.get("ownerName2"));
 						jsonObject.put("carNumber1", obj.get("carNumber1"));
@@ -301,6 +307,7 @@ public class ResourceServlet extends AbstractResourceServlet{
 					else
 					{
 						jsonObject.put("id", obj.get("_id"));
+						jsonObject.put("time", obj.get("time"));
 						jsonObject.put("ownerName1", obj.get("ownerName1"));
 						jsonObject.put("ownerName2", obj.get("ownerName2"));
 						jsonObject.put("carNumber1", obj.get("carNumber1"));
@@ -345,6 +352,7 @@ public class ResourceServlet extends AbstractResourceServlet{
 				jsonObject.put("attachements", attachmentList);
 			}
 			jsonObject.put("id", obj.get("_id"));
+			jsonObject.put("time", obj.get("time"));
 			jsonObject.put("ownerName1", obj.get("ownerName1"));
 			jsonObject.put("ownerName2", obj.get("ownerName2"));
 			jsonObject.put("carNumber1", obj.get("carNumber1"));

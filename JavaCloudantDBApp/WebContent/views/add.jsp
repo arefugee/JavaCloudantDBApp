@@ -12,23 +12,39 @@
     <link href="resources/css/templatemo_justified.css" rel="stylesheet">
     <link href="resources/css/bootstrap-combined.min.css" rel="stylesheet">
     <link href="resources/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" media="screen">
-     
-    <script type="text/javascript" src="resources/js/jquery-1.11.1.js"></script>
+    
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.css">
+	<script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.js"></script>
+	<script type="text/javascript" src="resources/js/bootstrap-datetimepicker.min.js"></script>
+
+	<style type="text/css">
+    	html,body{margin:10;padding:10;}
+    	.iw_poi_title {color:#CC5522;font-size:14px;font-weight:bold;overflow:hidden;padding-right:13px;white-space:nowrap}
+    	.iw_poi_content {font:12px arial,sans-serif;overflow:visible;padding-top:4px;white-space:-moz-pre-wrap;word-wrap:break-word}
+	</style>
+	<script type="text/javascript" src="http://api.map.baidu.com/api?v=1.5&ak=Qwo4QaYk0ezPv1I1RwSiELjU"></script>
+	
     <script type="text/javascript" src="resources/js/util.js"></script>
 	<script type="text/javascript" src="resources/js/main.js"></script>
-	<script type="text/javascript" src="resources/js/bootstrap-datetimepicker.min.js"></script>
-	<script type="text/javascript" src="http://api.map.baidu.com/api?v=1.5&ak=Qwo4QaYk0ezPv1I1RwSiELjU"></script>
   </head>
 
   <body>
 
-    <div id="container" class="container">
-       <h1>Car Insurance Management System</h1>
-        <ul class="nav nav-justified">
-          <li><a href=".">Case List</a></li>
-          <li class="active"><a href="#">Add a Case</a></li>
-          <li><a href="map">Map</a></li>
-        </ul>
+   <div data-role="page" id="page">
+
+		<div data-role="header" data-position="fixed">
+			Car Insurance Management System
+			<div data-role="navbar" data-iconpos="left">	
+				<ul>
+				  <li onclick="gotoPage('./')"><a href="#" data-icon="home">Case List</a></li>
+		          <li><a href="#" class="ui-btn-active" data-icon="plus">Add a Case</a></li>
+		          <li onclick="gotoPage('map')"><a href="#" data-icon="grid">Map</a></li>
+				</ul>		
+			</div>
+		</div>
+		
+		
 
       	<div class="row space30"> <!-- row 1 begins -->
       	    <div class="col-md-6">
@@ -72,9 +88,9 @@
                   	placeholder="Enter the accident description">${jsonObject.acc_description}</textarea>
 				  </div>
                 </form>
-                <button class="btn btn-default" onclick="saveChange(submitform)">Submit</button>
-                <button class="btn btn-default" onclick="deleteItem(submitform)">Delete</button>
-                <button class="btn btn-default" onclick="addAnother(submitform)">Add Another</button>
+                	<button data-icon="check" data-iconpos="left" data-role="button" data-mini="true" data-inline="true" data-corners="true" onclick="saveChange(submitform)">Submit</button>
+                	<button data-icon="minus" data-iconpos="left" data-role="button" data-mini="true" data-inline="true" data-corners="true" onclick="deleteItem(submitform)">Delete</button>
+                	<button data-icon="plus" data-iconpos="left" data-role="button" data-mini="true" data-inline="true" data-corners="true" onclick="addAnother(submitform)">Add Another</button>
            </div>
            
             <div class="col-md-6">
@@ -100,10 +116,10 @@
      	</div> <!-- /row 1 -->
 
       <!-- Site footer -->
-      <div class="footer">
       	<div id="loadingImage"></div>	
-        <p>Copyright @ 2014 IBM | <a href="http://www.ibm.com/" title="IBM">IBM</a> </p>
-      </div>
+      <div data-role="footer">
+	  	<p>Copyright @ 2014 IBM | <a href="http://www.ibm.com/" title="IBM">IBM</a> </p>
+	  </div>
       <script type="text/javascript">
       	window.onload = function() {
           if(navigator.geolocation) {
@@ -128,11 +144,13 @@
           			&& latitudeFormValue != null && latitudeFormValue != ""){
           		
           	}else{
-          		var newvalue = longitude+ (Math.random() * 10);
+          		//var newvalue = longitude+ (Math.random() * 10);
+          		var newvalue = longitude;
           		longitudeFormValue = newvalue;
           		document.getElementById("longitude").value = newvalue;
           		
-              	var newvalue2 = latitude + (Math.random() * 10);
+              	//var newvalue2 = latitude + (Math.random() * 10);
+              	var newvalue2 = latitude;
               	latitudeFormValue = newvalue2;
               	document.getElementById("latitude").value = newvalue2;
           	}

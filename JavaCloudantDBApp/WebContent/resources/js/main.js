@@ -29,11 +29,10 @@ function loadItems(){
 		}
 		var row;
 		for(i = 0; i < items.length; ++i){
-			if (i/4 == 0){
-				row = document.createElement("div");
-				row.setAttribute("class", "row space30");
+//			if (i/4 == 0){
+				row = document.createElement("li");
 				document.getElementById('caselist').appendChild(row);;
-			}
+//			}
 			addItem(items[i], !hasItems, row);
 		}
 		if(!hasItems){
@@ -49,6 +48,7 @@ function loadItems(){
 			}
 			save();
 		}
+		$('#caselist').listview('refresh');
 	}, function(err){
 		console.error(err);
 	});
@@ -125,33 +125,33 @@ var attachButton = "<br><input type=\"file\" name=\"file\" id=\"upload_file\"><i
 
 function setRowContent(item, row)
 {
-		var innerHTML = "<h6>" + item.ownerName1 +" / " + item.ownerName2 +"</h6>";
+//		var innerHTML = "<h6>" + item.ownerName1 +" / " + item.ownerName2 +"</h6>";
+		var innerHTML = "";
 		var attachments = item.attachements;
 		if(attachments && attachments.length>0)
 		{
 			var attachment = attachments[0];
 			if(attachment.content_type.indexOf("image/")==0)
 			{
-				innerHTML+= "<a href='#'>" +
-								"<img  src=" + attachment.url + " alt='Image' />" +
-							"</a>";
+				innerHTML+= "<img  src=" + attachment.url + " alt='Image' />";
 			}
 		}
-		innerHTML += "<p>" + item.carNumber1 + "</p>";
-		innerHTML += "<p>" + item.carNumber2 + "</p>";
+		innerHTML += "<h6>" + item.ownerName1 +" / " + item.ownerName2 +"</h6>";
+		innerHTML += "<p>" + item.carNumber1 +" / " + item.carNumber2 + "</p>";
 		innerHTML += "<p>" + item.dateTime + "</p>";
-		innerHTML += "<p><a class='btn-sm btn-primary' href='add?id="+item.id+"'>Details &raquo;</a></p>";
+//		innerHTML += "<p><a class='btn-sm btn-primary' onclick='gotoPage(add?id="+item.id+")'></a></p>";
+//		innerHTML += "<p><button class='btn btn-default' onclick=gotoPage('add?id="+item.id+"')>Details &raquo;</button></p>";
 		
 		row.innerHTML = innerHTML;
 }
 
 function addItem(item, isNew, container){
 	
-	var row = document.createElement('div');
-	row.setAttribute("class", "col-xs-6 col-sm-3");
+	var row = document.createElement('a');
 	var id = item && item.id;
 	if(id){
 		row.setAttribute('data-id', id);
+		row.setAttribute("href", "javascript:gotoPage('add?id="+id+"')");
 	}
 	
 	if(item) // if not a new row
@@ -364,3 +364,7 @@ function updateLocation(position) {
     var marker = new BMap.Marker(point);                        
     map.addOverlay(marker);
 };
+
+function gotoPage(url){
+	window.location.href=url; 
+}

@@ -43,6 +43,7 @@ function loadItems(){
 			}
 			save();
 		}
+		
 	}, function(err){
 		console.error(err);
 	});
