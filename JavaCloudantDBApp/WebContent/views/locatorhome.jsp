@@ -57,7 +57,7 @@ var longitude;
         		 longitude: longitude1
  			};	
     	xhrPost("api/location", data, function(item){
-			alert(data.location + "  " + data.latitude + "  " + data.latitude);
+			alert(data.location + "  " + data.latitude + "  " + data.longitude);
 		}, function(err){
 			console.error(err);
 		});

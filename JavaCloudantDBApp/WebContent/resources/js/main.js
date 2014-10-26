@@ -139,6 +139,7 @@ function setRowContent(item, row)
 		innerHTML += "<h6>" + item.ownerName1 +" / " + item.ownerName2 +"</h6>";
 		innerHTML += "<p>" + item.carNumber1 +" / " + item.carNumber2 + "</p>";
 		innerHTML += "<p>" + item.dateTime + "</p>";
+		innerHTML += "<p><font color='red'>" + item.caseStatus + "</font></p>";
 //		innerHTML += "<p><a class='btn-sm btn-primary' onclick='gotoPage(add?id="+item.id+")'></a></p>";
 //		innerHTML += "<p><button class='btn btn-default' onclick=gotoPage('add?id="+item.id+"')>Details &raquo;</button></p>";
 		

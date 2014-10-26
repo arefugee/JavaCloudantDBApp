@@ -50,6 +50,7 @@ public class ResourceServlet extends AbstractResourceServlet{
 			@RequestParam("carNumber1")  String carNumber1, 
 			@RequestParam("carNumber2")  String carNumber2,
 			@RequestParam("dateTime")  String dateTime, 
+			@RequestParam("caseStatus")  String caseStatus, 
 			@RequestParam("latitude")  String latitude,
 			@RequestParam("longitude")  String longitude, 
 			@RequestParam("acc_description")  String acc_description) throws IOException, Exception {
@@ -93,6 +94,7 @@ public class ResourceServlet extends AbstractResourceServlet{
 			data.put("carNumber1", carNumber1);	
 			data.put("carNumber2", carNumber2);	
 			data.put("dateTime", dateTime);	
+			data.put("caseStatus", caseStatus);	
 			data.put("latitude", latitude);	
 			data.put("longitude", longitude);	
 			data.put("acc_description", acc_description);
@@ -116,7 +118,8 @@ public class ResourceServlet extends AbstractResourceServlet{
 			obj.put("ownerName2", ownerName2);	
 			obj.put("carNumber1", carNumber1);	
 			obj.put("carNumber2", carNumber2);	
-			obj.put("dateTime", dateTime);	
+			obj.put("dateTime", dateTime);
+			obj.put("caseStatus", caseStatus);
 			obj.put("latitude", latitude);	
 			obj.put("longitude", longitude);	
 			obj.put("time", id);
@@ -147,6 +150,7 @@ public class ResourceServlet extends AbstractResourceServlet{
 		resultObject.put("carNumber1", carNumber1);	
 		resultObject.put("carNumber2", carNumber2);	
 		resultObject.put("dateTime", dateTime);	
+		resultObject.put("caseStatus", caseStatus);
 		resultObject.put("latitude", latitude);	
 		resultObject.put("longitude", longitude);	
 		resultObject.put("acc_description", acc_description);	
@@ -162,6 +166,7 @@ public class ResourceServlet extends AbstractResourceServlet{
 			@RequestParam("carNumber1")  String carNumber1, 
 			@RequestParam("carNumber2")  String carNumber2,
 			@RequestParam("dateTime")  String dateTime, 
+			@RequestParam("caseStatus")  String caseStatus, 
 			@RequestParam("latitude")  String latitude,
 			@RequestParam("longitude")  String longitude, 
 			@RequestParam("acc_description")  String acc_description) throws Exception{
@@ -178,6 +183,7 @@ public class ResourceServlet extends AbstractResourceServlet{
 		data.put("carNumber1", carNumber1);	
 		data.put("carNumber2", carNumber2);	
 		data.put("dateTime", dateTime);	
+		data.put("caseStatus", caseStatus);	
 		data.put("latitude", latitude);	
 		data.put("longitude", longitude);	
 		data.put("acc_description", acc_description);
@@ -191,6 +197,7 @@ public class ResourceServlet extends AbstractResourceServlet{
 		resultObject.put("carNumber1", carNumber1);	
 		resultObject.put("carNumber2", carNumber2);	
 		resultObject.put("dateTime", dateTime);	
+		resultObject.put("caseStatus", caseStatus);	
 		resultObject.put("latitude", latitude);	
 		resultObject.put("longitude", longitude);
 		resultObject.put("time", id);
@@ -227,6 +234,7 @@ public class ResourceServlet extends AbstractResourceServlet{
 			@RequestParam("carNumber1")  String carNumber1, 
 			@RequestParam("carNumber2")  String carNumber2,
 			@RequestParam("dateTime")  String dateTime, 
+			@RequestParam("caseStatus")  String caseStatus, 
 			@RequestParam("latitude")  String latitude,
 			@RequestParam("longitude")  String longitude, 
 			@RequestParam("acc_description")  String acc_description) throws Exception{
@@ -244,6 +252,7 @@ public class ResourceServlet extends AbstractResourceServlet{
 			obj.put("carNumber1", carNumber1);	
 			obj.put("carNumber2", carNumber2);	
 			obj.put("dateTime", dateTime);	
+			obj.put("caseStatus", caseStatus);	
 			obj.put("latitude", latitude);	
 			obj.put("longitude", longitude);	
 			obj.put("acc_description", acc_description);
@@ -298,6 +307,7 @@ public class ResourceServlet extends AbstractResourceServlet{
 						jsonObject.put("carNumber1", obj.get("carNumber1"));
 						jsonObject.put("carNumber2", obj.get("carNumber2"));
 						jsonObject.put("dateTime", obj.get("dateTime"));
+						jsonObject.put("caseStatus", obj.get("caseStatus"));
 						jsonObject.put("latitude", obj.get("latitude"));
 						jsonObject.put("longitude", obj.get("longitude"));
 						jsonObject.put("acc_description", obj.get("acc_description"));
@@ -313,6 +323,7 @@ public class ResourceServlet extends AbstractResourceServlet{
 						jsonObject.put("carNumber1", obj.get("carNumber1"));
 						jsonObject.put("carNumber2", obj.get("carNumber2"));
 						jsonObject.put("dateTime", obj.get("dateTime"));
+						jsonObject.put("caseStatus", obj.get("caseStatus"));
 						jsonObject.put("latitude", obj.get("latitude"));
 						jsonObject.put("longitude", obj.get("longitude"));
 						jsonObject.put("acc_description", obj.get("acc_description"));
@@ -358,6 +369,7 @@ public class ResourceServlet extends AbstractResourceServlet{
 			jsonObject.put("carNumber1", obj.get("carNumber1"));
 			jsonObject.put("carNumber2", obj.get("carNumber2"));
 			jsonObject.put("dateTime", obj.get("dateTime"));
+			jsonObject.put("caseStatus", obj.get("caseStatus"));
 			jsonObject.put("latitude", obj.get("latitude"));
 			jsonObject.put("longitude", obj.get("longitude"));
 			jsonObject.put("acc_description", obj.get("acc_description"));

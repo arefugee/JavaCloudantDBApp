@@ -74,13 +74,20 @@
 	      				</span>
 	    			 </div>
 	    		  </div>
-                  <div class="form-group">
-                    <label for="latitude">Latitude:</label>
-                    <input name="latitude" type="text" class="form-control" id="latitude" value='${jsonObject.latitude}' disabled="disabled">
+	    		  <div class="form-group">
+					    <label for="caseStatus">Status:</label>
+					    <c:set var="myStatus" value="${jsonObject.caseStatus}"/>
+					    <select name="caseStatus" id="caseStatus">
+					      <option value="submit" <c:if test="${myStatus == 'submit'}">selected</c:if>>Submit</option>
+					      <option value="processing" <c:if test="${myStatus == 'processing'}">selected</c:if> >Processing</option>
+					      <option value="pass" <c:if test="${myStatus == 'pass'}">selected</c:if>>Pass</option>
+					    </select>
                   </div>
-                  <div class="form-group">
-                    <label for="longitude">Longitude:</label>
-                    <input name="longitude" type="text" class="form-control" id="longitude" value='${jsonObject.longitude}' disabled="disabled">
+                  <div class="ui-hidden-accessible">
+                    <label for="latitude" class="ui-hidden-accessible">Latitude:</label>
+                    <input class="ui-hidden-accessible" name="latitude" type="text" class="form-control" id="latitude" value='${jsonObject.latitude}' disabled="disabled">
+                    <label for="longitude" class="ui-hidden-accessible">Longitude:</label>
+                    <input class="ui-hidden-accessible" name="longitude" type="text" class="form-control" id="longitude" value='${jsonObject.longitude}' disabled="disabled">
                   </div>
                   <div class="form-group">
                     <label for="acc_description">Description:</label>
@@ -108,8 +115,8 @@
               </div>
               <div id="picStatus"></div>
 	          <div id="uploadbtnarea">
-	             <input class="btn btn-default" type="file" name="file"  width="200px" id="upload_file" value="">
-	             <input class="btn btn-default" type="submit" value="Upload" onClick='uploadFile(upload_file, submitform, attachments)'>
+	             <input type="file" name="file"  width="200px" id="upload_file">
+	             <button data-icon="plus" data-iconpos="left" data-role="button" data-inline="true" data-corners="true" onclick="uploadFile(upload_file, submitform, attachments)">Upload</button>
 	          </div>
             </div>
             

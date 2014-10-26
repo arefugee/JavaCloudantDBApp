@@ -427,11 +427,12 @@ public class LocationDetectorServlet {
 			//url = (String) obj.get("url");
 		}
 		else {
-			System.out.println("VCAP_SERVICES not found, using hard-coded defaults");
-			databaseHost = "0fed2888-14e6-46a7-9b64-ce3e6637c7fe-bluemix.cloudant.com";
-		    port = 443;	
-			user = "0fed2888-14e6-46a7-9b64-ce3e6637c7fe-bluemix";
-			password = "305ddad7ed9bcf7eff308a9bf383f9f81321e0518a2376ae8d31d5f8eac627a3";
+			System.out
+			.println("VCAP_SERVICES not found, using hard-coded defaults");
+	databaseHost = "0d63be48-d55a-4c59-acab-b6f753c2791f-bluemix.cloudant.com";
+	port = 443;
+	user = "0d63be48-d55a-4c59-acab-b6f753c2791f-bluemix";
+	password = "b38b43074dfb6ad7af197009c08839bc620d0492dccf7da34076af1cb2e78831";
 			
 		}
 

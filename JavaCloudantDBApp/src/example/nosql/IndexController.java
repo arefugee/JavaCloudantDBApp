@@ -26,22 +26,20 @@ public class IndexController extends AbstractResourceServlet{
     }  
   
     @RequestMapping(value = "/admin-login", method = RequestMethod.GET)  
-    public String showAdminLogin() {  
+    public String showAdminLogin() { 
         return "admin-login";  
     }  
     
-//    @RequestMapping(value = "/add", method = RequestMethod.GET)  
-//    public ModelAndView showAdd() {  
-////        return "add";  
-//    	return new ModelAndView("add", "message", "Hello world!");
-//    } 
+    @RequestMapping(value = "/locator", method = RequestMethod.GET)  
+    public String showLocator() {  
+        return "locatorhome";  
+    }
+    
     
     @RequestMapping(value = "/add", method = RequestMethod.GET)
 	public ModelAndView get(@RequestParam(value = "id", required = false)  Long id, @RequestParam(value = "cmd", required = false) String cmd ) throws Exception {
 		CouchDbConnector dbConnector = createDbConnector(); 
 		
-//		JSONObject resultObject = new JSONObject();
-//		JSONArray jsonArray = new JSONArray();
 		Map jsonObject = new HashMap();
 		List attachmentList = new ArrayList();
 			
@@ -64,11 +62,13 @@ public class IndexController extends AbstractResourceServlet{
 					jsonObject.put("attachements", attachmentList);
 				}
 				jsonObject.put("id", obj.get("_id"));
+				jsonObject.put("time", obj.get("time"));
 				jsonObject.put("ownerName1", obj.get("ownerName1"));
 				jsonObject.put("ownerName2", obj.get("ownerName2"));
 				jsonObject.put("carNumber1", obj.get("carNumber1"));
 				jsonObject.put("carNumber2", obj.get("carNumber2"));
 				jsonObject.put("dateTime", obj.get("dateTime"));
+				jsonObject.put("caseStatus", obj.get("caseStatus"));
 				jsonObject.put("latitude", obj.get("latitude"));
 				jsonObject.put("longitude", obj.get("longitude"));
 				jsonObject.put("acc_description", obj.get("acc_description"));
