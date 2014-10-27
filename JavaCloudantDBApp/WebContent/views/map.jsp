@@ -50,7 +50,7 @@
 		
 		<div data-role="footer" class="ui-btn">
 		  	<div data-role="fieldcontain" data-inline="true">
-		  		<p data-inline="true">Copyright @ 2014 IBM | <a href="http://www.ibm.com/" title="IBM">IBM</a> 
+		  		<p data-inline="true">Copyright @ 2014 IBM | 
 				    <select name="switch" id="demo" data-role="slider" data-mini="true" data-inline="true">
 				      <option value="on">On</option>
 				      <option value="off" selected>Off</option>

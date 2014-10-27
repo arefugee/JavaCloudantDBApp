@@ -32,6 +32,8 @@
     	<pathelement location="WebContent/WEB-INF/lib/spring-security-config-3.2.5.RELEASE.jar"/>
     	<pathelement location="WebContent/WEB-INF/lib/jstl-1.2.jar"/>
     	<pathelement location="WebContent/WEB-INF/lib/commons-logging-1.2.jar"/>
+    	<pathelement location="WebContent/WEB-INF/lib/httpclient-4.3.3.jar"/>
+    	<pathelement location="WebContent/WEB-INF/lib/httpclient-cache-4.3.3.jar"/>
 	<fileset dir="dep-jar"> 
         	<include name="*.jar"/> 
     	</fileset>
