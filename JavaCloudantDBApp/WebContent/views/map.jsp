@@ -23,9 +23,14 @@
 <body> 
 
 	<div data-role="page" id="page">
-	
 		<div data-role="header" data-fullscreen="true">
-			Car Insurance Management System
+			<div data-role="fieldcontain" data-inline="true">
+					<label for="demo">Car Insurance Management System</label>
+				    <select name="switch" id="demo" data-role="slider" data-mini="true" data-inline="true">
+				      <option value="on">On</option>
+				      <option value="off" selected>Off</option>
+				   </select>
+  			</div>
 			<div data-role="navbar" data-iconpos="left">	
 				<ul>
 				  <li onclick="gotoPage('./')"><a href="#" data-icon="home">Case List</a></li>
@@ -49,14 +54,7 @@
 		<div data-role="content" id="ditucontainer" style="height:600px"></div>
 		
 		<div data-role="footer" class="ui-btn">
-		  	<div data-role="fieldcontain" data-inline="true">
-		  		<p data-inline="true">Copyright @ 2014 IBM | 
-				    <select name="switch" id="demo" data-role="slider" data-mini="true" data-inline="true">
-				      <option value="on">On</option>
-				      <option value="off" selected>Off</option>
-				   </select>
-			   </p>
-  			</div>
+		  		<p data-inline="true">Copyright @ 2014 IBM | <a href="http://www.ibm.com/" title="IBM">IBM</a> </p>
 		</div>
 		
 	</div>
