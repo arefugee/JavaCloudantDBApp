@@ -117,18 +117,18 @@ var currentLocIconImg = new BMap.Icon(
     }
     
    function updateLocation(position) {
-//        	var latitude = position.coords.latitude;
-//        	var longitude = position.coords.longitude;
-	   		
+        	 latitude = position.coords.latitude;
+        	 longitude = position.coords.longitude;
+        	 var point;
 	   		//Mock current location data:
 	  
-	   if (isFirstTime){
-		   latitude  = 39.9078331;
-		   longitude = 116.26424159999998;
-	   }else{
-		   latitude += 0.001;
-		   longitude += 0.001;
-	   }
+//	   if (isFirstTime){
+//		   latitude  = 39.9078331;
+//		   longitude = 116.26424159999998;
+//	   }else{
+//		   latitude += 0.001;
+//		   longitude += 0.001;
+//	   }
 	   		
         	if(!latitude || !longitude) {
         	    alert("HTML5 Geolocation is supported in your browser, but location is currently not available.");
@@ -136,9 +136,13 @@ var currentLocIconImg = new BMap.Icon(
         	}
         	if (!map){
         		map = new BMap.Map("ditucontainer");                    
+        		point = new BMap.Point(longitude, latitude); 
+        		map.centerAndZoom(point, 16); 
+        	}else{
+        		point = new BMap.Point(longitude, latitude); 
+        		map.panTo(point); 
         	}
-        	var point = new BMap.Point(longitude, latitude); 
-        	map.centerAndZoom(point, 15); 
+        	
         	if(currentLocMarker){
         		map.removeOverlay(currentLocMarker);
         	}
@@ -169,8 +173,13 @@ var currentLocIconImg = new BMap.Icon(
 //		   getRealtimeStatus();      
 //		},5000);
 	   setInterval(function(){
-		   getHeatMap(); 
-		   getRealtimeStatus();      
+		   //Get current map scope.
+		   var bs = map.getBounds();   
+		   var bssw = bs.getSouthWest();
+		   var bsne = bs.getNorthEast();
+		   
+		   getHeatMap(longitude, latitude, bssw.lng, bssw.lat, bsne.lng, bsne.lat); 
+		   getRealtimeStatus(longitude, latitude, bssw.lng, bssw.lat, bsne.lng, bsne.lat);      
 		   updateCurrentLocation();  
 		},5000);
 	   
@@ -181,14 +190,20 @@ var currentLocIconImg = new BMap.Icon(
 	   }
    }
    
-   function getRealtimeStatus(curPos, minLongtitude, maxLongtitude, minLatitude, maxLatitue){
+   function getRealtimeStatus(currentLng, currentLat, minLongtitude, minLatitude,maxLongtitude , maxLatitue){
 //	   var url = "http://tedgenstheremeseareencee:IgqAjXieWYef1yXkSIpRjsAq@zozowell.cloudant.com/incidents/_design/seindex/_search/loctime?" +
 //	   		"&q=long:[" + minLongtitude + " TO " + maxLongtitude + " ]" +
 //	   		"&lat:[" + minLatitude + " TO " + maxLatitue + "]" +
 //	   		"&include_docs=true";
 //	   var url = "http://tedgenstheremeseareencee:IgqAjXieWYef1yXkSIpRjsAq@zozowell.cloudant.com/incidents/_design/seindex/_search/loctime?&q=long:[116.2906705453363 TO 116.2924293746595]&lat:[40.05284646742972 TO 40.0537483433316]&time:[1413848194 TO 1413848224]&include_docs=true";
 	   var url = "mapapi/realtime";
-	   xhrGet(url, function(data){
+	   var paras = {};
+//	   paras["url"] = encodeURIComponent("http://tedgenstheremeseareencee:IgqAjXieWYef1yXkSIpRjsAq@zozowell.cloudant.com/incidents/_design/seindex/_search/loctime?&q=long:[116.2906705453363 TO 116.2924293746595]&lat:[40.05284646742972 TO 40.0537483433316]&time:[1413848194 TO 1413848224]&include_docs=true");
+	   paras["url"] = "http://tedgenstheremeseareencee:IgqAjXieWYef1yXkSIpRjsAq@zozowell.cloudant.com/incidents/_design/seindex/_search/loctime?&q=long:"
+		   +encodeURIComponent("[116.2906705453363 TO 116.2924293746595]")+"&lat:"
+		   +encodeURIComponent("[40.05284646742972 TO 40.0537483433316]")+"&include_docs=true";
+	   
+	   xhrPost(url, paras, function(data){
 		   var tmpAllaccPoints = data.rows;
 		   
 		   if (!allaccPoints){//First time
@@ -239,14 +254,17 @@ var currentLocIconImg = new BMap.Icon(
 		});
    }
    
-   function getHeatMap(curPos, minLongtitude, maxLongtitude, minLatitude, maxLatitue){
+   function getHeatMap(currentLng, currentLat, minLongtitude, minLatitude,maxLongtitude , maxLatitue){
 //	   var url = "http://tedgenstheremeseareencee:IgqAjXieWYef1yXkSIpRjsAq@zozowell.cloudant.com/incidents/_design/seindex/_search/loctime?" +
 //	   		"&q=long:[" + minLongtitude + " TO " + maxLongtitude + " ]" +
 //	   		"&lat:[" + minLatitude + " TO " + maxLatitue + "]" +
 //	   		"&include_docs=true";
 //	   var url = "http://tedgenstheremeseareencee:IgqAjXieWYef1yXkSIpRjsAq@zozowell.cloudant.com/incidents/_design/seindex/_search/loctime?&q=long:[116.2906705453363 TO 116.2924293746595]&lat:[40.05284646742972 TO 40.0537483433316]&time:[1413848194 TO 1413848224]&include_docs=true";
 	   var url = "mapapi/heatmap";
-	   xhrGet(url, function(data){
+	   var data = {};
+	   data["url"] = "";
+	   
+	   xhrPost(url, data, function(data){
 		    var allHeatPoints = data.rows;
 		    map.removeOverlay(heatmapOverlay);
 			heatmapOverlay = new BMapLib.HeatmapOverlay({"radius":20});
@@ -263,7 +281,6 @@ var currentLocIconImg = new BMap.Icon(
 						music.play();
 						reported = true;
 					}
-					
 				}
 			}
 		}, function(err){

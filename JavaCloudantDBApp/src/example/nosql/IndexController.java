@@ -35,6 +35,11 @@ public class IndexController extends AbstractResourceServlet{
         return "locatorhome";  
     }
     
+    @RequestMapping(value = "/pick", method = RequestMethod.GET)  
+    public String pickupLocation(){
+    	return "pickupLocation";
+    }
+    
     
     @RequestMapping(value = "/add", method = RequestMethod.GET)
 	public ModelAndView get(@RequestParam(value = "id", required = false)  Long id, @RequestParam(value = "cmd", required = false) String cmd ) throws Exception {
