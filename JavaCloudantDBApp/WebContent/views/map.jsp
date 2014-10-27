@@ -48,8 +48,15 @@
 		</div>
 		<div data-role="content" id="ditucontainer" style="height:600px"></div>
 		
-		<div data-role="footer">
-		  	<p>Copyright @ 2014 IBM | <a href="http://www.ibm.com/" title="IBM">IBM</a> </p>
+		<div data-role="footer" class="ui-btn">
+		  	<div data-role="fieldcontain" data-inline="true">
+		  		<p data-inline="true">Copyright @ 2014 IBM | <a href="http://www.ibm.com/" title="IBM">IBM</a> 
+				    <select name="switch" id="demo" data-role="slider" data-mini="true" data-inline="true">
+				      <option value="on">On</option>
+				      <option value="off" selected>Off</option>
+				   </select>
+			   </p>
+  			</div>
 		</div>
 		
 	</div>
