@@ -189,7 +189,7 @@ var currentLocIconImg = new BMap.Icon(
 					   var point = new BMap.Point(tmpItem.fields.long, tmpItem.fields.lat);
 					   var marker = new BMap.Marker(point);
 						map.addOverlay(marker);
-						marker.setAnimation(BMAP_ANIMATION_DROP);
+						marker.setAnimation(BMAP_ANIMATION_BOUNCE);
 						//create infor window
 						var _iw = createInfoWindow(tmpItem);
 						marker.addEventListener("click",function(){

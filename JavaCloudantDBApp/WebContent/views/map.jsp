@@ -25,7 +25,6 @@
 	<div data-role="page" id="page">
 		<div data-role="header" data-fullscreen="true">
 			<div data-role="fieldcontain" data-inline="true">
-					<label for="demo">Car Insurance Management System</label>
 				    <select name="switch" id="demo" data-role="slider" data-mini="true" data-inline="true">
 				      <option value="on">On</option>
 				      <option value="off" selected>Off</option>
@@ -62,6 +61,12 @@
 <script type="text/javascript">
 		$(document).ready(function(){
 			 initMap();
+			 document.addEventListener('touchstart', function () {
+				    document.getElementById('accidentaudio').play();
+				    document.getElementById('accidentaudio').pause();
+				    document.getElementById('areaaudio').play();
+				    document.getElementById('areaaudio').pause();
+				});
   		});
 </script>
 
