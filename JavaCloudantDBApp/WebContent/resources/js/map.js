@@ -16,6 +16,14 @@ var currentLocIconImg = new BMap.Icon(
 			infoWindowOffset:new BMap.Size(10,1),
 			offset:new BMap.Size(6,32)
 		});
+var newAccIconImg = new BMap.Icon(
+		'resources/images/newacc.png', 
+		new BMap.Size(24,24),
+		{
+			imageOffset: new BMap.Size(0,0),
+			infoWindowOffset:new BMap.Size(10,1),
+			offset:new BMap.Size(6,32)
+		});
 
 	function initMap(){
         createMap();
@@ -43,7 +51,7 @@ var currentLocIconImg = new BMap.Icon(
 
     //创建InfoWindow
     function createInfoWindow(i){
-        var iw = new BMap.InfoWindow("<b class='iw_poi_title' title='" + i.id + "'>" + i.id + "</b><div class='iw_poi_content'>"+i.fields.time+"</div>");
+        var iw = new BMap.InfoWindow("<b class='iw_poi_title' title='" + i.dateTime + "'>" + i.dateTime + "</b><div class='iw_poi_content'>"+i.acc_description+"</div>");
         return iw;
     }
     //创建一个Icon
@@ -57,8 +65,8 @@ var currentLocIconImg = new BMap.Icon(
 	  if (isDemo){
 		  //Mock current location data:
 		   if (isFirstTime){
-			   latitude  = 39.9078331;
-			   longitude = 116.26424159999998;
+			   latitude  = 39.9058331;
+			   longitude = 116.26224159999998;
 		   }else{
 			   latitude += 0.001;
 			   longitude += 0.001;
@@ -96,20 +104,7 @@ var currentLocIconImg = new BMap.Icon(
    }
    
    function startTracking(){
-//	   //Every 5 seconds to get heatmap
-//	   setInterval(function(){
-//		   getHeatMap();        
-//		},5000);
-//	   
-//	   //Every 5 seconds to get current location 
-//	   setInterval(function(){
-//		   updateCurrentLocation();       
-//		},5000);
-//	   
-//	   //Every 5 seconds to get current location
-//	   setInterval(function(){
-//		   getRealtimeStatus();      
-//		},5000);
+	   
 	   setInterval(function(){
 		   //Get current map scope.
 		   var bs = map.getBounds();   
@@ -121,9 +116,9 @@ var currentLocIconImg = new BMap.Icon(
 			   isDemo = true;
 			   reported = false;
 			   allaccPoints = undefined;
-			   latitude  = 39.9078331;
-			   longitude = 116.26424159999998;
-		   }else if (demoObj.value == "off"){
+			   latitude  = 39.9058331;
+			   longitude = 116.26224159999998;
+		   }else if (demoObj.value == "off" && isDemo == true){
 			   allaccPoints = undefined;
 			   isDemo = false;
 		   }
@@ -141,65 +136,71 @@ var currentLocIconImg = new BMap.Icon(
    }
    
    function getRealtimeStatus(currentLng, currentLat, minLongtitude, minLatitude,maxLongtitude , maxLatitue){
-//	   var url = "http://tedgenstheremeseareencee:IgqAjXieWYef1yXkSIpRjsAq@zozowell.cloudant.com/incidents/_design/seindex/_search/loctime?" +
-//	   		"&q=long:[" + minLongtitude + " TO " + maxLongtitude + " ]" +
-//	   		"&lat:[" + minLatitude + " TO " + maxLatitue + "]" +
-//	   		"&include_docs=true";
-//	   var url = "http://tedgenstheremeseareencee:IgqAjXieWYef1yXkSIpRjsAq@zozowell.cloudant.com/incidents/_design/seindex/_search/loctime?&q=long:[116.2906705453363 TO 116.2924293746595]&lat:[40.05284646742972 TO 40.0537483433316]&time:[1413848194 TO 1413848224]&include_docs=true";
 	   var url = "mapapi/realtime";
 	   var paras = {};
-//	   paras["url"] = encodeURIComponent("http://tedgenstheremeseareencee:IgqAjXieWYef1yXkSIpRjsAq@zozowell.cloudant.com/incidents/_design/seindex/_search/loctime?&q=long:[116.2906705453363 TO 116.2924293746595]&lat:[40.05284646742972 TO 40.0537483433316]&time:[1413848194 TO 1413848224]&include_docs=true");
-	   paras["url"] = "http://tedgenstheremeseareencee:IgqAjXieWYef1yXkSIpRjsAq@zozowell.cloudant.com/incidents/_design/seindex/_search/loctime?&q=long:"
-		   +encodeURIComponent("[116.2906705453363 TO 116.2924293746595]")+"&lat:"
-		   +encodeURIComponent("[40.05284646742972 TO 40.0537483433316]")+"&include_docs=true" + (isDemo?"&demo=true":"");
+	   
+	   paras["url"] = "https://0d63be48-d55a-4c59-acab-b6f753c2791f-bluemix.cloudant.com/sample_nosql_db/_design/seindex/_search/loctime?q=long:"
+		   +encodeURIComponent("["+minLongtitude+" TO "+maxLongtitude+"]")
+		   +"&lat:" + encodeURIComponent("["+minLatitude + " TO "+maxLatitue+"]")
+		   +"&include_docs=true" 
+		   +"&sort=" + encodeURIComponent("\"-time\"")
+		   +"&limit=5"
+		   + (isDemo?"&demo=true":"");
 	   
 	   xhrPost(url, paras, function(data){
-		   var tmpAllaccPoints = data.rows;
-		   
-		   if (!allaccPoints){//First time
-			   allaccPoints = tmpAllaccPoints;
-			   for(var i = 0; i < allaccPoints.length; ++i){
-					var item = allaccPoints[i];
-					if(item && 'fields' in item){
-						var point = new BMap.Point(item.fields.long, item.fields.lat);
-						var marker = new BMap.Marker(point);
-						map.addOverlay(marker);
-						//create infor window
-						var _iw = createInfoWindow(item);
-						marker.addEventListener("click",function(){
-						    this.openInfoWindow(_iw);
-					    });
+			
+			   var tmpAllaccPoints = data.rows || [];
+			   
+			   if (!allaccPoints){//First time
+				   allaccPoints = tmpAllaccPoints;
+				   for(var i = 0; i < allaccPoints.length; ++i){
+						var item = allaccPoints[i];
+						if(item && 'id' in item){
+							var point = new BMap.Point(item.doc.longitude, item.doc.latitude);
+							var marker = new BMap.Marker(point);
+							var content = item.doc.dateTime + '  ' +  item.doc.acc_description;
+							marker.setTitle(content);
+							map.addOverlay(marker);
+							marker.addEventListener("click",function(e){openInfo(content,e)});
+//							//create infor window
+//							var _iw = createInfoWindow(item);
+//							marker.addEventListener("click",function(){
+//							    marker.openInfoWindow(_iw);
+//						    });
+						}
 					}
-				}
-		   }else{//from second time
-			   for (var j=0; j<tmpAllaccPoints.length; j++){
-				   var isSame = false;
-				   var tmpItem = tmpAllaccPoints[j];
-				   for (var k=0; k<allaccPoints.length; k++){
-					   if (tmpItem.id == allaccPoints[k].id){
-						   isSame = true;
-						   break;
+			   }else{//from second time
+				   for (var j=0; j<tmpAllaccPoints.length; j++){
+					   var isSame = false;
+					   var tmpItem = tmpAllaccPoints[j];
+					   for (var k=0; k<allaccPoints.length; k++){
+						   if (tmpItem.id == allaccPoints[k].id){
+							   isSame = true;
+							   break;
+						   }
+					   }
+					   if (!isSame){
+						   alert("An accident occured nearly!");
+							var music =  document.getElementById("accidentaudio");
+							music.play();
+							sleep(1000);
+						   var point = new BMap.Point(tmpItem.doc.longitude, tmpItem.doc.latitude);
+						   var marker = new BMap.Marker(point,{icon:newAccIconImg});
+						   var content = tmpItem.doc.dateTime + '  ' +  tmpItem.doc.acc_description;
+						   marker.setTitle(content);
+							map.addOverlay(marker);
+							marker.setAnimation(BMAP_ANIMATION_BOUNCE);
+							marker.addEventListener("click",function(e){openInfo(content,e);});
+							//create infor window
+//							var _iw = createInfoWindow(tmpItem.doc);
+//							marker.addEventListener("click",function(){
+//							    this.openInfoWindow(_iw);
+//						    });
+							allaccPoints[allaccPoints.length] = tmpItem;
 					   }
 				   }
-				   if (!isSame){
-					   alert("An accident occured nearly!");
-						var music =  document.getElementById("accidentaudio");
-						music.play();
-						sleep(1000);
-					   var point = new BMap.Point(tmpItem.fields.long, tmpItem.fields.lat);
-					   var marker = new BMap.Marker(point);
-						map.addOverlay(marker);
-						marker.setAnimation(BMAP_ANIMATION_BOUNCE);
-						//create infor window
-						var _iw = createInfoWindow(tmpItem);
-						marker.addEventListener("click",function(){
-						    this.openInfoWindow(_iw);
-					    });
-						allaccPoints[allaccPoints.length] = tmpItem;
-						
-				   }
 			   }
-		   }
+			
 		   
 		}, function(err){
 			console.error(err);
@@ -207,26 +208,27 @@ var currentLocIconImg = new BMap.Icon(
    }
    
    function getHeatMap(currentLng, currentLat, minLongtitude, minLatitude,maxLongtitude , maxLatitue){
-//	   var url = "http://tedgenstheremeseareencee:IgqAjXieWYef1yXkSIpRjsAq@zozowell.cloudant.com/incidents/_design/seindex/_search/loctime?" +
-//	   		"&q=long:[" + minLongtitude + " TO " + maxLongtitude + " ]" +
-//	   		"&lat:[" + minLatitude + " TO " + maxLatitue + "]" +
-//	   		"&include_docs=true";
-//	   var url = "http://tedgenstheremeseareencee:IgqAjXieWYef1yXkSIpRjsAq@zozowell.cloudant.com/incidents/_design/seindex/_search/loctime?&q=long:[116.2906705453363 TO 116.2924293746595]&lat:[40.05284646742972 TO 40.0537483433316]&time:[1413848194 TO 1413848224]&include_docs=true";
 	   var url = "mapapi/heatmap";
-	   var data = {};
-	   data["url"] = "";
+	   var paras = {};
+	   paras["url"] = "https://0d63be48-d55a-4c59-acab-b6f753c2791f-bluemix.cloudant.com/sample_nosql_db/_design/secindex/_view/dangspot?startkey=12"
+		   + (isDemo?"&demo=true":"");
 	   
-	   xhrPost(url, data, function(data){
-		    var allHeatPoints = data.rows;
+	   xhrPost(url, paras, function(data){
+		    var tmpAllHeatPoints = data.rows;
+		    var allHeatPoints = [];
+		    for(var i = 0; i < tmpAllHeatPoints.length; ++i){
+				var item = tmpAllHeatPoints[i].value;
+				allHeatPoints[i] = item; 
+			}
 		    map.removeOverlay(heatmapOverlay);
 			heatmapOverlay = new BMapLib.HeatmapOverlay({"radius":20});
 			map.addOverlay(heatmapOverlay);
-			heatmapOverlay.setDataSet({data:allHeatPoints,max:100});
+			heatmapOverlay.setDataSet({data:allHeatPoints,max:12});
 			
 			for(var i = 0; i < allHeatPoints.length; ++i){
 				var item = allHeatPoints[i];
-				if ( Math.abs(item.lng - longitude) <= 0.0005 && 
-						Math.abs(item.lat - latitude) <= 0.0005 ){
+				if ( Math.abs(item.lng - longitude) <= 0.0001 && 
+						Math.abs(item.lat - latitude) <= 0.0001 ){
 					if (!reported){
 						alert("You are entering the dangerous area!");
 						var music =  document.getElementById("areaaudio");
@@ -239,5 +241,12 @@ var currentLocIconImg = new BMap.Icon(
 			console.error(err);
 		});
    }
+   
+   function openInfo(content,e){
+		var p = e.target;
+		var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
+		var infoWindow = new BMap.InfoWindow(p.getTitle());  // 创建信息窗口对象 
+		map.openInfoWindow(infoWindow,point); //开启信息窗口
+	}
   
   

@@ -19,7 +19,9 @@ public abstract class AbstractResourceServlet {
 	// set default db connection credentials
 	protected String databaseHost = "user.cloudant.com";
 	protected int port = 443;
-	protected String databaseName = "demo_nosql_db";
+//	protected String databaseName = "demo_nosql_db";
+	protected String databaseName = "sample_nosql_db";
+	
 	protected String user = "user";
 	protected String password = "password";
 	
@@ -31,7 +33,8 @@ public abstract class AbstractResourceServlet {
 		String VCAP_SERVICES = System.getenv("VCAP_SERVICES");
 		String serviceName = null;
 
-		if (VCAP_SERVICES != null) {
+//		if (VCAP_SERVICES != null) {
+		if (false){
 			// parse the VCAP JSON structure
 			JSONObject obj = JSONObject.parse(VCAP_SERVICES);
 			String dbKey = null;

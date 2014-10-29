@@ -60,13 +60,13 @@
 </body>
 <script type="text/javascript">
 		$(document).ready(function(){
-			 initMap();
 			 document.addEventListener('touchstart', function () {
 				    document.getElementById('accidentaudio').play();
 				    document.getElementById('accidentaudio').pause();
 				    document.getElementById('areaaudio').play();
 				    document.getElementById('areaaudio').pause();
 				});
+			 initMap();
   		});
 </script>
 

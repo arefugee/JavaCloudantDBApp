@@ -2,9 +2,9 @@ applications:
 - services:
   - MyFirstWeb:cloudantNoSQLDB
   disk_quota: 1024M
-  host: teamdemo
-  name: teamdemo
-  path: JavaCloudantDB.war
+  host: bypass
+  name: bypass
+  path: ByPass.war
   domain: stage1.mybluemix.net
   instances: 1
   memory: 512M

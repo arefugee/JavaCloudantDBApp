@@ -8,26 +8,23 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.ws.rs.core.Response.Status;
 
 import org.ektorp.AttachmentInputStream;
 import org.ektorp.CouchDbConnector;
-import org.ektorp.CouchDbInstance;
 import org.ektorp.DocumentNotFoundException;
-import org.ektorp.http.HttpClient;
-import org.ektorp.http.StdHttpClient;
-import org.ektorp.impl.StdCouchDbConnector;
-import org.ektorp.impl.StdCouchDbInstance;
 import org.springframework.context.annotation.Scope;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ibm.json.java.JSONArray;
@@ -95,8 +92,9 @@ public class ResourceServlet extends AbstractResourceServlet{
 			data.put("carNumber2", carNumber2);	
 			data.put("dateTime", dateTime);	
 			data.put("caseStatus", caseStatus);	
-			data.put("latitude", latitude);	
-			data.put("longitude", longitude);	
+			data.put("latitude", Float.parseFloat(latitude));	
+			data.put("longitude", Float.parseFloat(longitude));
+			
 			data.put("acc_description", acc_description);
 			data.put("time", id);
 			data.put("_id", id+"");
@@ -120,8 +118,8 @@ public class ResourceServlet extends AbstractResourceServlet{
 			obj.put("carNumber2", carNumber2);	
 			obj.put("dateTime", dateTime);
 			obj.put("caseStatus", caseStatus);
-			obj.put("latitude", latitude);	
-			obj.put("longitude", longitude);	
+			obj.put("latitude", Float.parseFloat(latitude));	
+			obj.put("longitude", Float.parseFloat(longitude));	
 			obj.put("time", id);
 			obj.put("acc_description", acc_description);	
 			dbConnector.update(obj);
@@ -175,7 +173,7 @@ public class ResourceServlet extends AbstractResourceServlet{
 		CouchDbConnector dbConnector = createDbConnector();
 		JSONObject resultObject = new JSONObject();
 		Map<String, Object> data = new HashMap<String, Object>();
-		long id = System.currentTimeMillis();
+		long id = System.currentTimeMillis()/1000;
 		data.put("_id", id+"");
 		data.put("time", id);
 		data.put("ownerName1", ownerName1);	
@@ -184,8 +182,8 @@ public class ResourceServlet extends AbstractResourceServlet{
 		data.put("carNumber2", carNumber2);	
 		data.put("dateTime", dateTime);	
 		data.put("caseStatus", caseStatus);	
-		data.put("latitude", latitude);	
-		data.put("longitude", longitude);	
+		data.put("latitude", Float.parseFloat(latitude));	
+		data.put("longitude", Float.parseFloat(longitude));	
 		data.put("acc_description", acc_description);
 		data.put("creation_date", new Date().toString());
 		dbConnector.create(data);	
@@ -253,8 +251,8 @@ public class ResourceServlet extends AbstractResourceServlet{
 			obj.put("carNumber2", carNumber2);	
 			obj.put("dateTime", dateTime);	
 			obj.put("caseStatus", caseStatus);	
-			obj.put("latitude", latitude);	
-			obj.put("longitude", longitude);	
+			obj.put("latitude", Float.parseFloat(latitude));	
+			obj.put("longitude", Float.parseFloat(longitude));	
 			obj.put("acc_description", acc_description);
 		}
 		
@@ -283,7 +281,7 @@ public class ResourceServlet extends AbstractResourceServlet{
 			{
 				//get all the document IDs present in database
 				List<String> docIds = dbConnector.getAllDocIds();
-				
+				docIds = sortDocIds(docIds);
 				if(docIds.size()==0)
 				{
 //					docIds = initializeSampleData(dbConnector);
@@ -449,6 +447,29 @@ public class ResourceServlet extends AbstractResourceServlet{
 		docIds.add(id+"");
 		return docIds;
 			
+	}
+	
+	private List sortDocIds(List<String> docIDs){
+		List resList = new ArrayList<String>();
+		for (int i=0; i<docIDs.size(); i++){
+			String docID = docIDs.get(i);
+			try{
+				Long id = Long.parseLong(docID);
+				resList.add(docID);
+			}catch(Exception e){
+				
+			}
+		}
+		
+		Collections.sort(resList, new Comparator<String>() {
+            public int compare(String arg0, String arg1) {
+            	long i1, i2;
+            	i1 = Long.parseLong(arg0);
+            	i2 = Long.parseLong(arg1);
+                return i1<i2?1:-1;
+            }
+          });
+		return resList;
 	}
 	
 }
