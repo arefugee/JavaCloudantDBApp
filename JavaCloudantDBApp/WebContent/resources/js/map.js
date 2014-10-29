@@ -166,7 +166,7 @@ var newAccIconImg = new BMap.Icon(
 	   xhrPost(url, paras, function(data){
 
 			   var tmpAllaccPoints = data.rows || [];
-
+			  
 			   if (!allaccPoints){//First time
 				   allaccPoints = tmpAllaccPoints;
 				   for(var i = 0; i < allaccPoints.length; ++i){
@@ -200,6 +200,7 @@ var newAccIconImg = new BMap.Icon(
 						   accspan.innerHTML = "Accident Occurred Nearby!";
 						   setTimeout(function(){accspan.innerHTML = "";}, 15000);
 							var music =  document.getElementById("accidentaudio");
+							music.loop=false;
 							music.play();
 							sleep(1000);
 						   var point = new BMap.Point(tmpItem.doc.longitude, tmpItem.doc.latitude);
@@ -252,6 +253,7 @@ var newAccIconImg = new BMap.Icon(
 						   accspan.innerHTML = " Entering Dangerous Area!";
 						   setTimeout(function(){accspan.innerHTML="";}, 15000);
 						var music =  document.getElementById("areaaudio");
+						music.loop=false;
 						music.play();
 						reported = true;
 					}
