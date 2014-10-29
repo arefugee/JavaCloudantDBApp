@@ -9,7 +9,7 @@ var allaccPoints;
 var reported = false;
 var isDemo = false;
 var currentLocIconImg = new BMap.Icon(
-		'resources/images/home.png', 
+		'resources/images/home.png',
 		new BMap.Size(24,24),
 		{
 			imageOffset: new BMap.Size(0,0),
@@ -17,7 +17,7 @@ var currentLocIconImg = new BMap.Icon(
 			offset:new BMap.Size(6,32)
 		});
 var newAccIconImg = new BMap.Icon(
-		'resources/images/newacc.png', 
+		'resources/images/newacc.png',
 		new BMap.Size(24,24),
 		{
 			imageOffset: new BMap.Size(0,0),
@@ -28,13 +28,13 @@ var newAccIconImg = new BMap.Icon(
 	function initMap(){
         createMap();
     }
-    
+
     function createMap(){
     	 if(navigator.geolocation) {
              navigator.geolocation.getCurrentPosition(updateLocation);
          }
     }
-    
+
     //地图控件添加函数：
     function addMapControl(){
     	var navigationControl = new BMap.NavigationControl({
@@ -59,7 +59,7 @@ var newAccIconImg = new BMap.Icon(
         var icon = new BMap.Icon("resources/images/home.png", new BMap.Size(json.w,json.h),{imageOffset: new BMap.Size(-json.l,-json.t),infoWindowOffset:new BMap.Size(json.lb+5,1),offset:new BMap.Size(json.x,json.h)})
         return icon;
     }
-    
+
    function updateLocation(position) {
       var point;
 	  if (isDemo){
@@ -75,41 +75,44 @@ var newAccIconImg = new BMap.Icon(
 		  	latitude = position.coords.latitude;
      	 	longitude = position.coords.longitude;
 	  }
-	   		
+
         	if(!latitude || !longitude) {
         	    alert("HTML5 Geolocation is supported in your browser, but location is currently not available.");
         	    return;
         	}
         	if (!map){
-        		map = new BMap.Map("ditucontainer");                    
-        		point = new BMap.Point(longitude, latitude); 
-        		map.centerAndZoom(point, 15); 
+        		map = new BMap.Map("ditucontainer");
+        		point = new BMap.Point(longitude, latitude);
+        		map.centerAndZoom(point, 15);
         	}else{
-        		point = new BMap.Point(longitude, latitude); 
-        		map.panTo(point); 
+        		point = new BMap.Point(longitude, latitude);
+        		var pinPoint = new BMap.Point(longitude, latitude - 0.008);
+        		map.panTo(pinPoint);
         	}
-        	
+
         	if(currentLocMarker){
         		map.removeOverlay(currentLocMarker);
         	}
         	currentLocMarker = new BMap.Marker(point,{icon:currentLocIconImg});
-            map.addOverlay(currentLocMarker); 
+            map.addOverlay(currentLocMarker);
         	window.map = map;
         	if(isFirstTime){
         		addMapControl();//向地图添加控件
         		startTracking();
         		isFirstTime = false;
         	}
-            
+
    }
-   
+
    function startTracking(){
-	   
+
 	   setInterval(function(){
 		   //Get current map scope.
-		   var bs = map.getBounds();   
-		   var bssw = bs.getSouthWest();
-		   var bsne = bs.getNorthEast();
+//		   var bs = map.getBounds();
+//		   var bssw = bs.getSouthWest();
+//		   var bsne = bs.getNorthEast();
+		   var bssw = new BMap.Point(longitude - 0.005, latitude - 0.005);
+		   var bsne = new BMap.Point(longitude + 0.005, latitude + 0.005);
 		   
 		   var demoObj = document.getElementById("demo");
 		   if (demoObj.value == "on" && isDemo == false){
@@ -122,35 +125,48 @@ var newAccIconImg = new BMap.Icon(
 			   allaccPoints = undefined;
 			   isDemo = false;
 		   }
+
+		   getHeatMap(longitude, latitude, bssw.lng, bssw.lat, bsne.lng, bsne.lat);
+		   getRealtimeStatus(longitude, latitude, bssw.lng, bssw.lat, bsne.lng, bsne.lat, 2);
 		   
-		   getHeatMap(longitude, latitude, bssw.lng, bssw.lat, bsne.lng, bsne.lat); 
-		   getRealtimeStatus(longitude, latitude, bssw.lng, bssw.lat, bsne.lng, bsne.lat);      
-		   updateCurrentLocation();  
 		},5000);
+	   setInterval(function(){
+		   updateCurrentLocation();
+		   }, 5000);
 	   
+
    }
    function updateCurrentLocation(){
 	   if(navigator.geolocation) {
 		   navigator.geolocation.getCurrentPosition(updateLocation);
 	   }
    }
-   
-   function getRealtimeStatus(currentLng, currentLat, minLongtitude, minLatitude,maxLongtitude , maxLatitue){
+
+   function getRealtimeStatus(currentLng, currentLat, minLongtitude, minLatitude, maxLongtitude, maxLatitue, recent_hours){
 	   var url = "mapapi/realtime";
 	   var paras = {};
-	   
+
+       //Retrieve all points in recnet hours, default fetch all points
+       var current_time_in_sec = Math.round( new Date().valueOf() /1000 );
+       var offset_in_sec = current_time_in_sec;
+       if (recent_hours > 0) {
+            offset_in_sec = 3600 * recent_hours;
+       }
+	   var from_in_sec = current_time_in_sec - offset_in_sec;
+
 	   paras["url"] = "https://0d63be48-d55a-4c59-acab-b6f753c2791f-bluemix.cloudant.com/sample_nosql_db/_design/seindex/_search/loctime?q=long:"
 		   +encodeURIComponent("["+minLongtitude+" TO "+maxLongtitude+"]")
 		   +"&lat:" + encodeURIComponent("["+minLatitude + " TO "+maxLatitue+"]")
-		   +"&include_docs=true" 
+		   +"&include_docs=true"
 		   +"&sort=" + encodeURIComponent("\"-time\"")
-		   +"&limit=5"
+           +"&time:" + encodeURIComponent("["+from_in_sec + " TO "+ current_time_in_sec+"]")
+		   +"&limit=10"
 		   + (isDemo?"&demo=true":"");
-	   
+
 	   xhrPost(url, paras, function(data){
-			
+
 			   var tmpAllaccPoints = data.rows || [];
-			   
+
 			   if (!allaccPoints){//First time
 				   allaccPoints = tmpAllaccPoints;
 				   for(var i = 0; i < allaccPoints.length; ++i){
@@ -180,7 +196,9 @@ var newAccIconImg = new BMap.Icon(
 						   }
 					   }
 					   if (!isSame){
-						   alert("An accident occured nearly!");
+						   var accspan =  document.getElementById("acc2");
+						   accspan.innerHTML = "Accident Occurred Nearby!";
+						   setTimeout(function(){accspan.innerHTML = "";}, 15000);
 							var music =  document.getElementById("accidentaudio");
 							music.play();
 							sleep(1000);
@@ -200,37 +218,39 @@ var newAccIconImg = new BMap.Icon(
 					   }
 				   }
 			   }
-			
-		   
+
+
 		}, function(err){
 			console.error(err);
 		});
    }
-   
+
    function getHeatMap(currentLng, currentLat, minLongtitude, minLatitude,maxLongtitude , maxLatitue){
 	   var url = "mapapi/heatmap";
 	   var paras = {};
 	   paras["url"] = "https://0d63be48-d55a-4c59-acab-b6f753c2791f-bluemix.cloudant.com/sample_nosql_db/_design/secindex/_view/dangspot?startkey=12"
 		   + (isDemo?"&demo=true":"");
-	   
+
 	   xhrPost(url, paras, function(data){
 		    var tmpAllHeatPoints = data.rows;
 		    var allHeatPoints = [];
 		    for(var i = 0; i < tmpAllHeatPoints.length; ++i){
 				var item = tmpAllHeatPoints[i].value;
-				allHeatPoints[i] = item; 
+				allHeatPoints[i] = item;
 			}
 		    map.removeOverlay(heatmapOverlay);
 			heatmapOverlay = new BMapLib.HeatmapOverlay({"radius":20});
 			map.addOverlay(heatmapOverlay);
 			heatmapOverlay.setDataSet({data:allHeatPoints,max:12});
-			
+
 			for(var i = 0; i < allHeatPoints.length; ++i){
 				var item = allHeatPoints[i];
-				if ( Math.abs(item.lng - longitude) <= 0.0001 && 
+				if ( Math.abs(item.lng - longitude) <= 0.0001 &&
 						Math.abs(item.lat - latitude) <= 0.0001 ){
 					if (!reported){
-						alert("You are entering the dangerous area!");
+						 var accspan =  document.getElementById("acc1");
+						   accspan.innerHTML = " Entering Dangerous Area!";
+						   setTimeout(function(){accspan.innerHTML="";}, 15000);
 						var music =  document.getElementById("areaaudio");
 						music.play();
 						reported = true;
@@ -241,12 +261,12 @@ var newAccIconImg = new BMap.Icon(
 			console.error(err);
 		});
    }
-   
+
    function openInfo(content,e){
 		var p = e.target;
 		var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
-		var infoWindow = new BMap.InfoWindow(p.getTitle());  // 创建信息窗口对象 
+		var infoWindow = new BMap.InfoWindow(p.getTitle());  // 创建信息窗口对象
 		map.openInfoWindow(infoWindow,point); //开启信息窗口
 	}
-  
-  
+
+

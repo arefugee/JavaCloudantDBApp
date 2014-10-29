@@ -25,7 +25,7 @@
 	<div data-role="page" id="page">
 		<div data-role="header" data-fullscreen="true">
 			<div data-role="fieldcontain" data-inline="true">
-				    <select name="switch" id="demo" data-role="slider" data-mini="true" data-inline="true">
+				   <select name="switch" id="demo" data-role="slider" data-mini="true" data-inline="true">
 				      <option value="on">On</option>
 				      <option value="off" selected>Off</option>
 				   </select>
@@ -37,6 +37,8 @@
 			      <li><a href="map" class="ui-btn-active" data-icon="grid">Map</a></li>
 				</ul>
 			</div>
+			<div id="acc1"></div>
+			<div id="acc2"></div>
 		</div>
 		<div class="ui-hidden-accessible">
 			<audio id="accidentaudio">
@@ -61,10 +63,10 @@
 <script type="text/javascript">
 		$(document).ready(function(){
 			 document.addEventListener('touchstart', function () {
-				    document.getElementById('accidentaudio').play();
-				    document.getElementById('accidentaudio').pause();
 				    document.getElementById('areaaudio').play();
 				    document.getElementById('areaaudio').pause();
+				    document.getElementById('accidentaudio').play();
+				    document.getElementById('accidentaudio').pause();
 				});
 			 initMap();
   		});
